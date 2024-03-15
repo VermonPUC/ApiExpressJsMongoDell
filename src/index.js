@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const app = express()
 app.use(express.json())
 const port = 3000
-mongoose.connect('mongodb+srv://vermoncom:KL8KZy1sU4YeTB7x@mega-sena-dell-api.4wgsdit.mongodb.net/?retryWrites=true&w=majority&appName=mega-sena-dell-api')
+
 
 const Aposta = mongoose.model('Aposta', {
     id: Number,
@@ -14,8 +14,14 @@ const Aposta = mongoose.model('Aposta', {
 });
 
 
-app.get('/apostas', (req, res) => {
-    res.send('Hello World!')
+app.get('/apostas', async (req, res) => {
+    const apostas = await Aposta.find()
+    res.send(apostas)
+})
+
+app.delete('/deleta/:id', async (req,res) => {
+    const aposta = await Aposta.findOneAndDelete({"id": req.params.id})
+    res.send(aposta)
 })
 
 app.post('/cadastra', async (req, res) => {
@@ -31,5 +37,6 @@ app.post('/cadastra', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
+    mongoose.connect('mongodb+srv://vermoncom:KL8KZy1sU4YeTB7x@mega-sena-dell-api.4wgsdit.mongodb.net/?retryWrites=true&w=majority&appName=mega-sena-dell-api')
 })
 
