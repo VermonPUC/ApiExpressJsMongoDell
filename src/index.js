@@ -1,7 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
-
 const app = express()
+
+//
+mongoose.connect('mongodb+srv://vermoncom:KL8KZy1sU4YeTB7x@mega-sena-dell-api.4wgsdit.mongodb.net/?retryWrites=true&w=majority&appName=mega-sena-dell-api')
 app.use(express.json())
 const port = 3000
 
@@ -37,6 +39,5 @@ app.post('/cadastra', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
-    mongoose.connect('mongodb+srv://vermoncom:KL8KZy1sU4YeTB7x@mega-sena-dell-api.4wgsdit.mongodb.net/?retryWrites=true&w=majority&appName=mega-sena-dell-api')
 })
 
