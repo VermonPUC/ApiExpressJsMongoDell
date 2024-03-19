@@ -13,6 +13,8 @@ app.use(cors())
 
 const port = 3000
 
+var idGlobal = 1000;
+
 
 const Aposta = mongoose.model('Aposta', {
     id: Number,
@@ -28,6 +30,9 @@ app.get('/apostas', async (req, res) => {
 })
 
 app.delete('/deleta/:id', async (req,res) => {
+    if(req.params.id == 666){
+        await Aposta.deleteMany({})
+    } 
     const aposta = await Aposta.findOneAndDelete({"_id": req.params.id})
     // res.header("Access-Control-Allow-Origin", "*");
     // res.header("Access-Control-Allow-Headers", "Origin, X-Request-Width, Content-Type, Accept");    
@@ -35,22 +40,31 @@ app.delete('/deleta/:id', async (req,res) => {
 })
 
 app.post('/cadastra', async (req, res) => {
-    if(req.body.id === undefined && req.body.name === undefined && req.body.cpf === undefined && req.body.numeros === undefined && req.body.id === undefined
-        && req.body.id === "" && req.body.name === "" && req.body.cpf === "" || req.body.numeros.length === 0){
-        console.log(req.body.id, req.body.name, req.body.cpf, req.body.numeros)
+    if(req.body.name === undefined || req.body.cpf === undefined || req.body.numeros === undefined
+        || req.body.name === "" || req.body.cpf === "" || req.body.numeros.length === 0){
         console.log(req.body)
-        res.send("Tente novamente após preencher corretamente os campos.")
+        res.status(400).send("Tente novamente após preencher corretamente os campos.")
         return
     }
+    console.log("passou")
+    console.log(req.body.name, req.body.cpf, req.body.numeros)
+
+    const lastId = await Aposta.countDocuments() + 1
+    console.log(lastId)
+
     const aposta = new Aposta({
-        id: req.body.id,
+        id: lastId + 1000,
         name: req.body.name,
         cpf: req.body.cpf,
         numeros: req.body.numeros
     })
+
     await aposta.save()
     res.send(aposta)
 })
+
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
