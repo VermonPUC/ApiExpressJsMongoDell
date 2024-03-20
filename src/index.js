@@ -27,9 +27,8 @@ const getRandomInt = (min, max) => {
 }
 
 app.get('/sorteio', async (req,res) => {
-
     var apostas_vencedoras = []
-    var numeros_sorteados = [15,17,10,11,48]
+    var numeros_sorteados = [13,1,50]
     var rodada = 0
     var vencedor = false
 
@@ -103,14 +102,15 @@ app.get('/apostas', async (req, res) => {
     })
 })
 
-app.delete('/deleta/:id', async (req,res) => {
+app.delete('/deleta', async (req,res) => {
     //apenas para debug, deleta toda a colecao.
-    if(req.params.id == 666){
+    if(req.query.id == 666){
         await Aposta.deleteMany({})
         res.send("Apostas deletadas")
         return
     }
-    const aposta = await Aposta.findOneAndDelete({"id": req.params.id})
+
+    const aposta = await Aposta.findOneAndDelete({"id": req.query.id})
     res.send(aposta)
 })
 
@@ -131,7 +131,7 @@ app.post('/cadastra', async (req, res) => {
     console.log(lastId)
 
     const aposta = new Aposta({
-        id: lastId + 999,
+        id: lastId + 1000,
         name: req.body.name,
         cpf: req.body.cpf,
         numeros: req.body.numeros
