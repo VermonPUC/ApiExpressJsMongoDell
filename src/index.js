@@ -28,7 +28,7 @@ const getRandomInt = (min, max) => {
 
 app.get('/sorteio', async (req,res) => {
     var apostas_vencedoras = []
-    var numeros_sorteados = [13,1,50]
+    var numeros_sorteados = []
     var rodada = 0
     var vencedor = false
 
@@ -127,15 +127,27 @@ app.post('/cadastra', async (req, res) => {
     console.log("passou")
     console.log(req.body.name, req.body.cpf, req.body.numeros)
 
-    const lastId = await Aposta.countDocuments() + 1
-    console.log(lastId)
+    //const lastId = await Aposta.countDocuments() + 1
+
+    const lastAposta = await Aposta.findOne().sort({ id: -1 }).catch(error => {
+        console.error("Erro ao encontrar a última aposta:", error);
+        res.status(500).send("Ocorreu um erro ao encontrar a última aposta.");
+    })
+    
+    let lastId = 1000;
+    if (lastAposta) {
+        lastId = lastAposta.id
+    }
+
 
     const aposta = new Aposta({
-        id: lastId + 1000,
+        id: lastId + 1,
         name: req.body.name,
         cpf: req.body.cpf,
         numeros: req.body.numeros
     })
+
+    console.log(aposta.name, aposta.cpf, aposta.numeros, lastId)
 
     await aposta.save()
     res.send(aposta)
